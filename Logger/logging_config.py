@@ -4,16 +4,19 @@ from module_config import ROOT_DIR
 
 
 # Create a simple logger in default directory "/Logger"
-def get_simple_logger(log_name, log_level=logging.DEBUG):
+def get_simple_logger(log_name, log_level=logging.DEBUG, format='simple'):
     """Create a simple logger in the default directory.
     :param log_name: Name of the logger and logger_name.log.
+    :param log_level: logging.Debug, logging.Warning, etc.
+    :param format: Formatter to use. See `set_formatter_format(option)`.
+    :return: logger.
     """
     # Create Logger with name and level
     logger = logging.getLogger(log_name)
     logger.setLevel(log_level)
 
     # Define a formatter for the Logger (Defaults to simple)
-    formatter = set_formatter_format('simple')
+    formatter = set_formatter_format(format)
 
     # Set path of the logger using ROOT_DIR and log_name
     path = f"{ROOT_DIR}/Logger/{log_name}.log"
