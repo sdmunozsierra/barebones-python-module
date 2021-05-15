@@ -8,7 +8,7 @@ from paramiko.ssh_exception import AuthenticationException, SSHException
 from logging import DEBUG
 from Logger import logging_config
 
-CLASS_LOG = logging_config.get_simple_logger("ssh_arch.py", DEBUG)
+CLASS_LOG = logging_config.get_simple_logger("ssh_arch", DEBUG)
 
 class SSHArchDevice():
 
@@ -179,7 +179,7 @@ class SSHArchDevice():
         self.unbind()
         return response
 
-    # Low level instructions to be able to use Fabric
+    # Low level instructions to be able to use instead of Fabric
     def _set_pacman(self):
         self.execute("pacman-key --init", su=True)
         self.execute("pacman-key --populate archlinuxarm", su=True)

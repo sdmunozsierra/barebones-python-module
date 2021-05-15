@@ -3,7 +3,7 @@ from App import main_app
 from Logger.logging_config import get_simple_logger
 
 # Create a logger if needed for testing cases
-TEST_LOG = get_simple_logger("test_log")  # Defaults as DEBUG
+TEST_LOG = get_simple_logger("test")  # Defaults as DEBUG
 
 
 def test_simple_function():
