@@ -35,7 +35,7 @@ class SSHArchDevice():
             self.ssh.connect(self.host, self. port, self.username, self.password)
             CLASS_LOG.debug("Connected to device using SSH")
         except (timeout, AuthenticationException, gaierror):
-            CLASS_LOG.critical("Could not connect to host: {}".format(self.host))
+            CLASS_LOG.critical("Could not connect to host {} on port {}".format(self.host))
             sys.exit()
 
     def _close_ssh(self):
@@ -146,7 +146,6 @@ class SSHArchDevice():
         data_output += self._command("exit")  # Close su session
         # receive output
         CLASS_LOG.info("SU Command ran")
-        CLASS_LOG.info(data_output)
         return data_output
 
     def send_command(self, command, time_override, su=False):
@@ -158,8 +157,6 @@ class SSHArchDevice():
             CLASS_LOG.info("Sending a command through SSH")
             output += self._command(command, time_override)
 
-        CLASS_LOG.info("OUTPUT")
-        print(output)
         return output
     
     # Add root password to class

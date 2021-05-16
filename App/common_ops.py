@@ -53,10 +53,16 @@ class ArchLinuxArmDevice():
         command_list = [
             'echo "LANG=en_US.UTF-8" >> /etc/locale.conf', 
             'echo "LC_COLLATE=C" >> /etc/locale.conf',
-            'echo "LC_TIME=en_US.UTF-8" >> /etc/locale.conf',
-            'date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d\' \' -f5-8)Z"'
+            'echo "LC_TIME=en_US.UTF-8" >> /etc/locale.conf'
         ]
         self.send_command(command_list, sudo=True)
+    
+    def op_set_datetime(self):
+        self.pacman_install("wget")
+        return self.send_command(
+            "date -s \"$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z\"",
+            sudo=True)
+
 
     def pacman_install(self, package, needed=True, noconfirm=True):
         cmd = "pacman -S "
@@ -82,23 +88,23 @@ class ArchLinuxArmDevice():
         self.op_set_locale()
         self.op_set_hostname(new_hostname)
         self.op_set_time()
+        self.op_set_datetime()
         self.op_set_new_user(new_username, new_password)
         CLASS_LOG.info("Device setup complete.")
     
-    def install_docker(self):
+    def docker_setup(self):
         """Install and runs docker service."""
+        self.send_command("pacman -Syu --needed --noconfirm", sudo=True)
         self.pacman_install(["docker", "docker-machine"])
-
-    def swarm_join(self, token):
-        """Sets the device to join a docker swarm using a token."""
         self.send_command("systemctl start docker.service", sudo=True)
+
+    def docker_swarm_join(self, token, leader):
+        """Sets the device to join a docker swarm using a token."""
+        self.send_command("docker swarm leave -f")
+        self.send_command("docker swarm join --token {} {}".format(token, leader), sudo=True)
 
     def install_yay(self):
         # Install yay needs git
         self.send_command("git -c http.sslVerify=false clone https://aur.archlinux.org/yay.git")
         self.send_command("cd yay && makepkg -si --noconfirm", respond=True)
         self.send_command("yay --version")
-
-    
-    def setup_ntp():
-        pass
