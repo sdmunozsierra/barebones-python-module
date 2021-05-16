@@ -63,16 +63,18 @@ def all_aboard():
     for i in range(len(host_list)):
         bridge = Bridge(host_list[i], port, new_username, new_password)
         dev = ArchLinuxArmDevice(bridge, root_password)
-
         message = "Creating bridge with user {} at {}".format(new_username, host_list[i])
         print(message)
         CLASS_LOG.info(message)
 
-        # dev.docker_setup()
+        dev.docker_setup()
+        message = "Docker set up."
+        print(message)
+        CLASS_LOG.info(message)
+
         message = "Joining docker swarm user {} at {}".format(new_username, swarm_leader)
         print(message)
         CLASS_LOG.info(message)
-        dev.op_set_datetime()
         dev.docker_swarm_join(swarm_token, swarm_leader)
 
 

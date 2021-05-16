@@ -94,6 +94,7 @@ class ArchLinuxArmDevice():
     
     def docker_setup(self):
         """Install and runs docker service."""
+        self.send_command("usermod -aG docker {}".format(self.device.username), sudo=True)
         self.send_command("pacman -Syu --needed --noconfirm", sudo=True)
         self.pacman_install(["docker", "docker-machine"])
         self.send_command("systemctl start docker.service", sudo=True)
