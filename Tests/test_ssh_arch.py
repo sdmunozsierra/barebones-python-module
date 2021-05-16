@@ -1,20 +1,18 @@
 """Simple test file for ssh_arch.py."""
-from App.ssh_arch import SSHArchDevice
+import os
 from unittest import TestCase
-
-# Create a logger if needed for testing cases
 from Logger.logging_config import get_simple_logger
 TEST_LOG = get_simple_logger("test")  # Defaults as DEBUG
+from dotenv import load_dotenv
+from App.ssh_arch import SSHArchDevice
 
-# These should come from env settings
-host = "192.168.1.2"
-port = 22
-username = "alarm"
-password = "alarm"
-root_password = "root"
-ssh = None
-channel = None
-data = None
+# These come from env settings
+load_dotenv()
+host = os.getenv("HOST")
+port = os.getenv("PORT")
+username = os.getenv("USERNAME")
+password = os.getenv("PASSWORD")
+root_password = os.getenv("ROOT_PASSWORD")
 
 class RunConnectionTests(TestCase):
 
