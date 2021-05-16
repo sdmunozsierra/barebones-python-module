@@ -1,7 +1,8 @@
 """Execute commands in a device running ssh. Compatible with Raspberry Pi 4 running on arch linux arm."""
-from socket import timeout
+import sys
 import time
 import paramiko
+from socket import timeout, gaierror
 from paramiko.channel import Channel
 from paramiko.ssh_exception import AuthenticationException, SSHException
 
@@ -32,10 +33,10 @@ class SSHArchDevice():
             self.ssh = paramiko.SSHClient()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.ssh.connect(self.host, self. port, self.username, self.password)
-            CLASS_LOG.info("Connected to device using SSH")
-        except (timeout, AuthenticationException):
+            CLASS_LOG.debug("Connected to device using SSH")
+        except (timeout, AuthenticationException, gaierror):
             CLASS_LOG.critical("Could not connect to host: {}".format(self.host))
-            exit(-1)
+            sys.exit()
 
     def _close_ssh(self):
         if not self.ssh:
@@ -44,7 +45,7 @@ class SSHArchDevice():
         try:
             self.ssh.close()
             self.ssh = None
-            CLASS_LOG.info("Closed SSH connection")
+            CLASS_LOG.debug("Closed SSH connection")
         except:
             CLASS_LOG.warning("Could not close ssh connection: {}".format(self.host))
 
@@ -60,7 +61,7 @@ class SSHArchDevice():
             self.binded = True
         except (SSHException):
             CLASS_LOG.critical("Failed to invoke a sheel in host: {}".format(self.host))
-            exit(-1)
+            sys.exit()
 
     def _close_channel(self):
         if not self.channel:
@@ -70,7 +71,7 @@ class SSHArchDevice():
             self.channel.close()
             self.channel = None
             self.binded = False
-            CLASS_LOG.info("Closed channel connection")
+            CLASS_LOG.debug("Closed channel connection")
         except:
             CLASS_LOG.warning("Could not close channel for host: {}".format(self.host))
 
@@ -79,13 +80,13 @@ class SSHArchDevice():
         self._connect_ssh()
         self._connect_channel()
         self.binded = True
-        CLASS_LOG.info("Binded")
+        CLASS_LOG.debug("Binded")
 
     def unbind(self):
         self._close_channel()
         self._close_ssh()
         self.binded = False
-        CLASS_LOG.info("Unbinded")
+        CLASS_LOG.debug("Unbinded")
 
     # Formatter
     def cmd_format(self, command):
@@ -192,7 +193,9 @@ class SSHArchDevice():
         self.execute("echo $'\n%wheel ALL=(ALL) ALL' >> /etc/sudoers", su=True)
 
     def _set_new_user(self, new_user, new_password):
+        self.execute([
+            "passwd {}".format(new_user),  # Change password
+            "{}".format(new_password),     # First password
+            "{}".format(new_password)],    # Confirm password
+            2, su=True)
         self.execute("useradd -m -g users -G wheel -s /bin/bash {}".format(new_user), 2, su=True)
-        self.execute("passwd {}".format(self.username), 1, su=True)  # change passwd
-        self.execute("{}".format(new_password), 2, su=True)  # first time
-        self.execute("{}".format(new_password), 2, su=True)  # confirm passwd
