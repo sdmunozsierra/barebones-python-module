@@ -18,7 +18,23 @@ new_password = os.getenv("NEW_PASSWORD")
 swarm_token = os.getenv("SWARM_TOKEN")
 swarm_leader = os.getenv("SWARM_LEADER")
 
-def exec_in_all():
+def fleet():
+    devices = []
+    if not isinstance(host_list, list):
+        message = "Only list of hosts"
+        print(message)
+        CLASS_LOG.critical(message)
+        sys.exit()
+
+    for i in range(len(host_list)):
+        bridge = Bridge(host_list[i], port, username, password)
+        devices.append(ArchLinuxArmDevice(bridge, root_password))
+        message = "Creating bridge with user {} at {}".format(username, host_list[i])
+        print(message)
+        CLASS_LOG.info(message)
+    return devices
+
+def all_aboard():
     print(host_list)
 
     message = "Executing in the following hosts: {}".format(host_list)
@@ -31,19 +47,18 @@ def exec_in_all():
         CLASS_LOG.critical(message)
         sys.exit()
 
-    # for i in range(len(host_list)):
-    #     bridge = Bridge(host_list[i], port, username, password)
-    #     dev = ArchLinuxArmDevice(bridge, root_password)
-    #     message = "Creating bridge with user {} at {}".format(username, host_list[i])
-    #     print(message)
-    #     CLASS_LOG.info(message)
+    for i in range(len(host_list)):
+        bridge = Bridge(host_list[i], port, username, password)
+        dev = ArchLinuxArmDevice(bridge, root_password)
+        message = "Creating bridge with user {} at {}".format(username, host_list[i])
+        print(message)
+        CLASS_LOG.info(message)
 
-
-    #     hostname = "rpi64{}".format(i)
-    #     message = "Setting up new device "
-    #     print(message)
-    #     CLASS_LOG.info(message)
-    #     dev.new_system_setup(new_username, new_password, hostname)
+        hostname = "rpi64{}".format(i)
+        message = "Setting up new device "
+        print(message)
+        CLASS_LOG.info(message)
+        dev.new_system_setup(new_username, new_password, hostname)
 
     for i in range(len(host_list)):
         bridge = Bridge(host_list[i], port, new_username, new_password)

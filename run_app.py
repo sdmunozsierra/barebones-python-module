@@ -1,5 +1,5 @@
-"""Runs the app inside App module."""
-from App.exec_in_target import exec_target, exec_in_all
+"""Runs modules inside the App directory."""
+from App import exec_in_target
 
-exec_in_all()
-# exec_target(2)
+exec_in_target.all_aboard()
+#exec_in_target.exec_target(2)
