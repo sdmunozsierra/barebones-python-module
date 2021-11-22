@@ -14,8 +14,43 @@ Global settings should be configured in `module_config.py` as it is on the root 
 
 Create an environment and pull modules from `modules.txt`.
 
+- Run as a script:
+
 ```shell
 $ python -m venv Venv
 $ source /Venv/bin/activate
 $ (python) pip install -r requirements.txt
 ```
+
+- Run manually:
+
+```shell
+$ python -m venv Venv
+$ source /Venv/bin/activate
+$ (python) pip install -r requirements.txt
+```
+
+# Add me as a submodule:
+
+```shell
+mkdir barebones-python-module
+cd barebones-python-module/
+git init
+git submodule add https://github.com/sdmunozsierra/barebones-python-module
+cat .gitmodules
+git add .gitmodules barebones-python-module
+git commit -m "added barebones-python-module as a submodule"
+```
+
+```bash
+#!/bin/bash
+mkdir barebones-python-module
+cd barebones-python-module/
+git init
+git submodule add https://github.com/sdmunozsierra/barebones-python-module
+cat .gitmodules
+git add .gitmodules barebones-python-module
+git commit -m "added barebones-python-module as a submodule"
+```
+
+# Fork Me:
