@@ -23,24 +23,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras
 
-      - name: Auto-format code
-        run: uv run ruff format src/
-
-      - name: Commit formatting changes
-        if: github.event_name == 'pull_request'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: |
-            🤖 Auto-format code with ruff
-
-            Automatically formatted by CI to maintain code style consistency.
-
-            https://claude.ai/code/session_01Vtr3wKxSRfPobdgjcx7Crr
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@users.noreply.github.com
-          commit_author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-          file_pattern: 'src/'
-          skip_dirty_check: false
+      - name: Format check
+        run: uv run ruff format --check src/
 
       - name: Lint
         run: uv run ruff check src/

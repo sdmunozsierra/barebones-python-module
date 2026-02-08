@@ -7,12 +7,16 @@ Clone, init, test, run — then extend with your own services.
 ## Quickstart
 
 ```bash
-just init       # install deps, create data dirs, check environment
+just init       # install deps, create data dirs, setup pre-commit hooks
 just test       # run all tests
 just run        # run the default service
 ```
 
 Requires [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just). See `just doctor` for environment checks.
+
+**First time setup:**
+- `just init` automatically installs pre-commit hooks that format your code before every commit
+- This prevents CI failures due to formatting issues
 
 ## What You Get
 

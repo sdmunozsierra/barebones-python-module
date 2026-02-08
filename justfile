@@ -15,6 +15,7 @@ default:
 init:
     uv sync --all-extras
     mkdir -p data/json data/db
+    uv run pre-commit install
     @just doctor
 
 # Sync dependencies from lockfile
@@ -57,6 +58,10 @@ check:
     uv run ruff check src/
     uv run mypy src/myapp/
     uv run pytest
+
+# Run pre-commit hooks on all files
+pre-commit:
+    uv run pre-commit run --all-files
 
 # ── Run ───────────────────────────────────────────────────────────────
 
